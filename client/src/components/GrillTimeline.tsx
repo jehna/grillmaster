@@ -11,6 +11,17 @@ export function GrillTimeline() {
   useEffect(() => {
     // Calculate timeline whenever selectedItems changes
     calculateTimeline();
+    
+    // If no items selected, ensure we clear the timeline display
+    if (selectedItems.length === 0 && timelineRef.current) {
+      const contentEl = timelineRef.current;
+      contentEl.innerHTML = '';
+      
+      const emptyState = document.createElement('div');
+      emptyState.className = 'text-center text-gray-400 absolute inset-0 flex items-center justify-center';
+      emptyState.innerHTML = '<p>Valitse ensin grillattavat tuotteet</p>';
+      contentEl.appendChild(emptyState);
+    }
   }, [selectedItems, calculateTimeline]);
 
   useEffect(() => {
