@@ -28,9 +28,18 @@ export function GrillTimeline() {
       return;
     }
 
-    // Set timeline width based on total time (1 minute = 60px)
-    const pixelsPerMinute = 60;
-    const timelineWidth = (timeline.totalTime * pixelsPerMinute) + 100; // Add padding
+    // Calculate a responsive pixels per minute value
+    const containerWidth = contentEl.parentElement?.clientWidth || 300;
+    const minWidth = Math.max(containerWidth - 40, 300);
+    const minPixelsPerMinute = 40; // Minimum size to keep visibility
+    
+    // Calculate how many pixels we have per minute, ensure it's at least minPixelsPerMinute
+    const pixelsPerMinute = Math.max(
+      minPixelsPerMinute,
+      Math.min(60, minWidth / (timeline.totalTime || 1))
+    );
+    
+    const timelineWidth = (timeline.totalTime * pixelsPerMinute) + 60; // Add padding
     contentEl.style.width = `${timelineWidth}px`;
 
     // Create time markers every minute

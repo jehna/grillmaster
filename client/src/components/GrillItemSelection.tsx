@@ -10,7 +10,7 @@ export function GrillItemSelection() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   return (
-    <div className="p-4 flex-grow overflow-y-auto pb-32">
+    <div className="p-4 flex-grow overflow-y-auto pb-44">
       <h2 className="text-xl font-bold mb-4">Valitse grillattavat</h2>
       
       <div className="grid grid-cols-1 gap-3">

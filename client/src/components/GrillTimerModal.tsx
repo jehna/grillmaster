@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useGrillItems } from "@/hooks/useGrillItems";
 import { useEffect, useState, useRef } from "react";
@@ -172,6 +172,10 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md p-0 bg-black bg-opacity-95 text-white max-h-full overflow-hidden flex flex-col h-[90vh]">
+        <DialogTitle className="sr-only">Grillausajastin</DialogTitle>
+        <DialogDescription className="sr-only">
+          Grillausajastin näyttää reaaliaikaisia ohjeita, milloin lisätä, kääntää tai poistaa eri ruoat grillistä.
+        </DialogDescription>
         <div className="p-6 flex-grow flex flex-col">
           <div className="mb-6 flex justify-between items-center">
             <h2 className="text-2xl font-bold">Grillausajastin</h2>
