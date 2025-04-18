@@ -13,7 +13,9 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [remainingTime, setRemainingTime] = useState("00:00");
   const [currentAction, setCurrentAction] = useState("Valmistaudu grillaukseen");
-  const [nextAction, setNextAction] = useState({ time: "00:00", message: "Odota..." });
+  const [nextActions, setNextActions] = useState<Array<{ time: string; message: string; icon: string }>>([
+    { time: "00:00", message: "Odota...", icon: "hourglass_empty" }
+  ]);
   const [isComplete, setIsComplete] = useState(false);
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
@@ -49,10 +51,11 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
         // Check if grilling is complete
         if (elapsed >= timelineInSeconds.totalTime) {
           setCurrentAction("Grillaus valmis! Hyvää ruokahalua!");
-          setNextAction({
+          setNextActions([{
             time: "00:00",
-            message: "Kaikki valmista!"
-          });
+            message: "Kaikki valmista!",
+            icon: "check_circle"
+          }]);
           setIsComplete(true);
 
           // Play completion notification
@@ -167,10 +170,33 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
       if (nextAct.type === 'flip') actionText = 'käännä';
       else if (nextAct.type === 'end') actionText = 'poista';
       
-      setNextAction({
-        time: timeUntilFormatted,
-        message: `${actionText} ${nextAct.item.name}`
+      // Group actions that happen at the same time
+      // Find all actions that occur at the same time
+      const sameTimeActions = upcomingActions.filter(action => 
+        Math.abs(action.time - nextAct.time) < 5 // Within 5 seconds
+      );
+      
+      // Create the next actions list
+      const actionsToShow = sameTimeActions.map(action => {
+        const timeUntil = action.time - elapsedSeconds;
+        const timeFormatted = formatTime(timeUntil);
+        
+        let actionText = 'lisää';
+        if (action.type === 'flip') actionText = 'käännä';
+        else if (action.type === 'end') actionText = 'poista';
+        
+        let icon = 'add_circle';
+        if (action.type === 'flip') icon = 'flip';
+        else if (action.type === 'end') icon = 'remove_circle';
+        
+        return {
+          time: timeFormatted,
+          message: `${actionText} ${action.item.name}`,
+          icon
+        };
       });
+      
+      setNextActions(actionsToShow);
     }
   }, [elapsedSeconds, timeline, isOpen, isComplete]);
 
@@ -273,15 +299,16 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
           </div>
           
           <div className="mt-4 p-4 bg-primary bg-opacity-20 rounded-lg">
-            <h3 className="font-bold mb-2">Seuraava toimenpide:</h3>
-            <div className="flex items-center">
-              <span className="material-icons mr-2">
-                {nextAction.message.includes('lisää') ? 'add_circle' : 
-                 nextAction.message.includes('käännä') ? 'flip' : 
-                 nextAction.message.includes('poista') ? 'remove_circle' : 
-                 'hourglass_empty'}
-              </span>
-              <span>{nextAction.time} - {nextAction.message}</span>
+            <h3 className="font-bold mb-2">Seuraavat toimenpiteet:</h3>
+            <div className="space-y-2">
+              {nextActions.map((action, index) => (
+                <div key={index} className="flex items-center">
+                  <span className="material-icons mr-2">
+                    {action.icon}
+                  </span>
+                  <span>{action.time} - {action.message}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
