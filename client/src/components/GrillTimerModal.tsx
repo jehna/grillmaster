@@ -57,8 +57,15 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
 
           // Play completion notification
           try {
-            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-happy-bells-notification-937.mp3');
-            audio.play();
+            const audio = new Audio();
+            audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-happy-bells-notification-937.mp3';
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+              playPromise.catch(error => {
+                console.log('Audio playback failed:', error);
+              });
+            }
           } catch (e) {
             console.log('Audio notification not supported');
           }
@@ -134,8 +141,15 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
       
       // Play notification sound
       try {
-        const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3');
-        audio.play();
+        const audio = new Audio();
+        audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3';
+        const playPromise = audio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Audio playback failed:', error);
+          });
+        }
       } catch (e) {
         console.log('Audio notification not supported');
       }
