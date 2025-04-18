@@ -216,6 +216,7 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
       <DialogContent 
         className="sm:max-w-md p-0 bg-black bg-opacity-95 text-white max-h-full overflow-hidden flex flex-col h-[90vh]"
         aria-describedby={dialogDescriptionId}
+        hideCloseButton={true}
       >
         <DialogTitle className="sr-only">Grillausajastin</DialogTitle>
         <DialogDescription id={dialogDescriptionId} className="sr-only">
