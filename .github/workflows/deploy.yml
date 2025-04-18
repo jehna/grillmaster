@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload dist directory
+          # Upload dist/public directory
           path: './dist/public'
 
   # Deployment job
