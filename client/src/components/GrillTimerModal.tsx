@@ -183,11 +183,16 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
 
   if (!isOpen || !timeline) return null;
 
+  const dialogDescriptionId = "timer-dialog-description";
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md p-0 bg-black bg-opacity-95 text-white max-h-full overflow-hidden flex flex-col h-[90vh]">
+      <DialogContent 
+        className="sm:max-w-md p-0 bg-black bg-opacity-95 text-white max-h-full overflow-hidden flex flex-col h-[90vh]"
+        aria-describedby={dialogDescriptionId}
+      >
         <DialogTitle className="sr-only">Grillausajastin</DialogTitle>
-        <DialogDescription className="sr-only">
+        <DialogDescription id={dialogDescriptionId} className="sr-only">
           Grillausajastin näyttää reaaliaikaisia ohjeita, milloin lisätä, kääntää tai poistaa eri ruoat grillistä.
         </DialogDescription>
         <div className="p-6 flex-grow flex flex-col">
@@ -221,10 +226,12 @@ export function GrillTimerModal({ isOpen, onClose }: GrillTimerModalProps) {
                   status = "Grillautuu";
                   statusClass = "text-primary grilling-animation";
                   
-                  // Check if currently flipping
-                  const isFlipping = item.flipTimes.some(flipTime => 
-                    Math.abs((flipTime * 60) - elapsedSeconds) < 5
-                  );
+                  // Check if currently flipping (increased to 45 seconds)
+                  const isFlipping = item.flipTimes.some(flipTime => {
+                    const timeDiff = (flipTime * 60) - elapsedSeconds;
+                    // Show flip indicator from 15 seconds before to 30 seconds after flip time
+                    return timeDiff <= 30 && timeDiff >= -15;
+                  });
                   
                   if (isFlipping) {
                     status = "Käännä nyt!";
